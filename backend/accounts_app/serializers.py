@@ -59,9 +59,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserLoginSerializer(serializers.Serializer):
-    """
-    ✅ استفاده از Serializer به جای ModelSerializer برای لاگین
-    """
+
     username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True)
 
@@ -69,13 +67,11 @@ class UserLoginSerializer(serializers.Serializer):
         username = data.get('username')
         password = data.get('password')
 
-        # بررسی وجود username و password
         if not username or not password:
             raise serializers.ValidationError({
                 "detail": "Username and password are required"
             })
 
-        # احراز هویت کاربر
         user = authenticate(username=username, password=password)
 
         if not user:
@@ -88,5 +84,5 @@ class UserLoginSerializer(serializers.Serializer):
                 "detail": "This account has been disabled"
             })
 
-        # ✅ برگرداندن کاربر
+
         return {'user': user}

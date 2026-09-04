@@ -12,10 +12,9 @@ from django.contrib.auth.models import User
 from .serializers import UserSerializer, UserLoginSerializer
 
 
-# ============ ویوهای عمومی (بدون احراز هویت) ============
 
 @api_view(['POST'])
-@permission_classes([AllowAny])  # ✅ همه می‌توانند ثبت‌نام کنند
+@permission_classes([AllowAny])
 def register_view(request):
     """
     ثبت‌نام کاربر جدید
@@ -44,10 +43,7 @@ def register_view(request):
 
 
 class UserLoginApiView(APIView):
-    """
-    ورود کاربر و دریافت توکن‌های JWT
-    """
-    permission_classes = [AllowAny]  # ✅ همه می‌توانند لاگین کنند
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
@@ -83,18 +79,13 @@ class UserLoginApiView(APIView):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-# ============ ویوهای خصوصی (نیاز به احراز هویت) ============
 
 class ProfileView(APIView):
-    """
-    دریافت و به‌روزرسانی اطلاعات کاربر احراز هویت شده
-    فقط کاربران احراز هویت شده می‌توانند دسترسی داشته باشند
-    """
-    authentication_classes = [JWTAuthentication]  # احراز هویت با JWT
-    permission_classes = [IsAuthenticated]  # ✅ نیاز به احراز هویت
 
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
-        """دریافت اطلاعات کاربر"""
+
         user = request.user
         serializer = UserSerializer(user)
         return Response({
@@ -103,7 +94,6 @@ class ProfileView(APIView):
         }, status=status.HTTP_200_OK)
 
     def put(self, request):
-        """به‌روزرسانی اطلاعات کاربر"""
         user = request.user
         serializer = UserSerializer(user, data=request.data, partial=True)
 
@@ -123,10 +113,8 @@ class ProfileView(APIView):
 
 
 class AdminOnlyView(APIView):
-    """
-    فقط ادمین‌ها می‌توانند به این ویو دسترسی داشته باشند
-    """
-    permission_classes = [IsAdminUser]  # ✅ فقط ادمین‌ها
+
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         return Response({
@@ -140,14 +128,10 @@ class AdminOnlyView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-# ============ ویوهای با تابع ============
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def dashboard_view(request):
-    """
-    داشبورد کاربر - فقط کاربران احراز هویت شده
-    """
     user = request.user
     return Response({
         "success": True,
@@ -167,9 +151,7 @@ def dashboard_view(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def public_view(request):
-    """
-    ویو عمومی - بدون نیاز به احراز هویت
-    """
+
     return Response({
         "success": True,
         "message": "This is a public endpoint",
@@ -187,9 +169,7 @@ from datetime import datetime
 
 
 class IsOwnerOrReadOnly(BasePermission):
-    """
-    Permission سفارشی: فقط صاحب شیء می‌تواند آن را تغییر دهد
-    """
+
 
     def has_object_permission(self, request, view, obj):
         # خواندن برای همه مجاز است
@@ -200,9 +180,7 @@ class IsOwnerOrReadOnly(BasePermission):
 
 
 class UserDetailView(APIView):
-    """
-    نمایش و به‌روزرسانی اطلاعات یک کاربر خاص
-    """
+
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def get(self, request, user_id):
