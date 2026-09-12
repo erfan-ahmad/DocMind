@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_filters',
 
 
     #app_project
@@ -166,7 +167,12 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/day',
         'user': '1000/day',
-    }
+    } ,
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ) ,
+        'DEFAULT_PAGINATION_CLASS': 'documents_app.paginations.DocumentPagination',
+    'PAGE_SIZE': 10,
 
 }
 SIMPLE_JWT = {
