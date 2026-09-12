@@ -136,17 +136,17 @@ DocMind is currently under active development.
   * [x] Permissions
   * [x] Authentication Tests
 
-* [ ] **Document Management** — **In Progress**
+* [x] **Document Management** — **In Progress**
 
-  * [ ] Category CRUD
-  * [ ] Document Upload
-  * [ ] Document CRUD
-  * [ ] Ownership & Security
-  * [ ] Validation
-  * [ ] Search, Filtering & Pagination
-  * [ ] Tests
+  * [x] Category CRUD
+  * [x] Document Upload
+  * [x] Document CRUD
+  * [x] Ownership & Security
+  * [x] Validation
+  * [x] Search, Filtering & Pagination
+  * [x] Tests
 
-* [ ] **Document Processing**
+* [x] **Document Processing**
 
   * [ ] Text Extraction from PDF and other supported files
   * [ ] Document preprocessing for AI
