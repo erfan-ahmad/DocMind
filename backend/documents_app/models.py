@@ -53,6 +53,25 @@ class Document(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    extracted_text = models.TextField(blank=True)
+    processed_at = models.DateTimeField(null=True, blank=True)
+    error_message = models.TextField(blank=True, default='')
 
     def __str__(self):
         return self.title
+
+
+
+
+
+
+
+
+class chunk(models.Model):
+    document = models.ForeignKey(Document, on_delete=models.CASCADE,related_name='chunks')
+    text = models.TextField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    index = models.PositiveIntegerField()
+    class Meta:
+        ordering = ['index']
+        unique_together = (('document', 'index'),)

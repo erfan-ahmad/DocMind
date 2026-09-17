@@ -1,5 +1,5 @@
 from rest_framework import viewsets, permissions, parsers,filters
-from rest_framework.exceptions import PermissionDenied
+from .services.document_processor import DocumentProcessor
 from django_filters.rest_framework import DjangoFilterBackend
 from .serializers import CategorySerilizer, DocumentSerializer
 from .models import Category, Document
@@ -33,4 +33,9 @@ class DocumentViewSet(viewsets.ModelViewSet):
         return Document.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        document = serializer.save(owner=self.request.user)
+        try:
+            DocumentProcessor(document).process()
+        except Exception:
+            pass
+        document.refresh_from_db()

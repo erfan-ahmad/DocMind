@@ -34,9 +34,10 @@ class DocumentSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'owner', 'category', 'title', 'description',
             'file', 'file_name', 'file_size', 'mime_type',
-            'status', 'created_at', 'updated_at'
+            'status', 'created_at', 'updated_at','error_message','extracted_text'
         ]
-        read_only_fields = ['id', 'owner', 'created_at', 'updated_at','file_name', 'file_size', 'mime_type']
+        read_only_fields = ['id', 'owner', 'created_at', 'updated_at','file_name',
+                            'file_size', 'mime_type','status','error_message','extracted_text']
 
     ALLOWED_EXTENSIONS = ['pdf', 'jpg', 'jpeg', 'png', 'docx']
     ALLOWED_MIME_TYPES = [
@@ -49,17 +50,26 @@ class DocumentSerializer(serializers.ModelSerializer):
     MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
 
     def validate_file(self, value):
-        ext = value.name.split('.')[-1].lower()
-        if ext not in self.ALLOWED_EXTENSIONS:
-            raise serializers.ValidationError(
-                f"فرمت فایل مجاز نیست. فرمت‌های مجاز: {', '.join(self.ALLOWED_EXTENSIONS)}")
-        content_type = getattr(value, 'content_type', None)
-        if content_type and content_type not in self.ALLOWED_MIME_TYPES:
-            raise serializers.ValidationError("نوع MIME فایل مجاز نیست.")
+        ALLOWED_EXTENSIONS = ['pdf', 'docx', 'jpg', 'jpeg', 'png']
+        ALLOWED_MIME_TYPES = [
+            'application/pdf',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'image/jpeg',
+            'image/png',
+        ]
+        MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 
-        if value.size > self.MAX_FILE_SIZE:
+        # چک پسوند
+        ext = value.name.split('.')[-1].lower()
+        if ext not in ALLOWED_EXTENSIONS:
             raise serializers.ValidationError(
-                f"حجم فایل نباید بیشتر از {self.MAX_FILE_SIZE // (1024*1024)} مگابایت باشد."
+                f"فرمت مجاز نیست. مجازها: {', '.join(ALLOWED_EXTENSIONS)}"
+            )
+
+        # چک حجم
+        if value.size > MAX_FILE_SIZE:
+            raise serializers.ValidationError(
+                f"حجم فایل نباید بیشتر از {MAX_FILE_SIZE // (1024 * 1024)}MB باشد."
             )
 
         return value
