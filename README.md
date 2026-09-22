@@ -148,17 +148,17 @@ DocMind is currently under active development.
 
 * [x] **Document Processing**
 
-  * [ ] Text Extraction from PDF and other supported files
-  * [ ] Document preprocessing for AI
+  * [x] Text Extraction from PDF and other supported files
+  * [x] Document preprocessing for AI
 
-* [ ] **AI / RAG**
+* [x] **AI / RAG**
 
-  * [ ] Text Chunking
-  * [ ] Embeddings
-  * [ ] Vector Database
-  * [ ] Retrieval
-  * [ ] LLM Integration
-  * [ ] Question Answering
+  * [x] Text Chunking
+  * [x] Embeddings
+  * [x] Vector Database
+  * [x] Retrieval
+  * [x] LLM Integration
+  * [x] Question Answering
   * [ ] Source Citation
 
 * [ ] **Production**
