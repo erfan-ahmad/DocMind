@@ -24,6 +24,9 @@ media/
 node_modules/
 dist/
 
+# Frontend (temporarily not pushed)
+frontend/
+
 # IDE
 .idea/
 .vscode/
