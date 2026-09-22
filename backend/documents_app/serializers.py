@@ -59,7 +59,6 @@ class DocumentSerializer(serializers.ModelSerializer):
         ]
         MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 
-        # چک پسوند
         ext = value.name.split('.')[-1].lower()
         if ext not in ALLOWED_EXTENSIONS:
             raise serializers.ValidationError(
@@ -83,11 +82,11 @@ class DocumentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("این عنوان قبلاً استفاده شده است.")
         return value
 
-    def validate_category(self, value):
-        request = self.context['request']
-        if value.owner != request.user:
-            raise serializers.ValidationError("این دسته‌بندی متعلق به شما نیست.")
-        return value
+    # def validate_category(self, value):
+    #     request = self.context['request']
+    #     if value.owner != request.user:
+    #         raise serializers.ValidationError("این دسته‌بندی متعلق به شما نیست.")
+    #     return value
 
     def create(self, validated_data):
         file = validated_data.get('file')
@@ -108,3 +107,8 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 
 
+
+
+class AskSerializer(serializers.Serializer):
+    query = serializers.CharField(max_length=1000)
+    k = serializers.IntegerField(default=5, min_value=1, max_value=20)

@@ -72,6 +72,7 @@ class chunk(models.Model):
     text = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     index = models.PositiveIntegerField()
+    embedding= models.JSONField(null=True)
     class Meta:
         ordering = ['index']
         unique_together = (('document', 'index'),)

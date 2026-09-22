@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
-
-
+    'corsheaders',
+    'drf_spectacular',
     #app_project
     'documents_app',
     'accounts_app',
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -154,7 +155,7 @@ REST_FRAMEWORK = {
 
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
 
     ),    'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
@@ -174,6 +175,8 @@ REST_FRAMEWORK = {
         'DEFAULT_PAGINATION_CLASS': 'documents_app.paginations.DocumentPagination',
     'PAGE_SIZE': 10,
 
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
 }
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
@@ -191,3 +194,14 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
     'JTI_CLAIM': 'jti',
 }
+
+
+EMBEDDING_MODEL_PATH = Path("/home/erfan/PycharmProjects/DocMind/model")
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
