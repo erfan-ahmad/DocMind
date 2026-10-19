@@ -196,7 +196,7 @@ SIMPLE_JWT = {
 }
 
 
-EMBEDDING_MODEL_PATH = Path("/home/erfan/PycharmProjects/DocMind/model")
+EMBEDDING_MODEL_PATH = Path(os.getenv('EMBEDDING_MODEL_PATH', str(BASE_DIR.parent / 'model')))
 
 
 CORS_ALLOWED_ORIGINS = [
