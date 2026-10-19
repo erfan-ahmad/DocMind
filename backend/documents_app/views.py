@@ -19,37 +19,29 @@ User = get_user_model()
 
 class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerilizer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
     filter_fields = ('category', 'status')
     search_fields = ['title', 'description']
     pagination_class = DocumentPagination
 
     def get_queryset(self):
-        user = self.request.user
-        if user.is_authenticated:
-            return Category.objects.filter(owner=user)
-        return Category.objects.all()
+        return Category.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer):
-        owner = User.objects.get(username="demo")
-        serializer.save(owner=owner)
+        serializer.save(owner=self.request.user)
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
     serializer_class = DocumentSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     parser_classes = (parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser)
 
     def get_queryset(self):
-        user = self.request.user
-        if user.is_authenticated:
-            return Document.objects.filter(owner=user)
-        return Document.objects.all()
+        return Document.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer):
-        owner = User.objects.get(username="demo")
-        document = serializer.save(owner=owner)
+        document = serializer.save(owner=self.request.user)
         try:
             DocumentProcessor(document).process()
         except Exception:
@@ -58,7 +50,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
 
 class AskView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = AskSerializer(data=request.data)
@@ -68,7 +60,7 @@ class AskView(APIView):
         query = serializer.validated_data["query"]
         k = serializer.validated_data["k"]
 
-        results = retrieve(query, k=k)
+        results = retrieve(query, user=request.user, k=k)
         if not results:
             return Response(
                 {"query": query, "answer": "در اسناد موجود پاسخی یافت نشد.", "sources": []},
