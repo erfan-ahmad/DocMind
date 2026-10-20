@@ -17,58 +17,52 @@ class DocumentSerializer(serializers.ModelSerializer):
         max_length=255,
         min_length=3,
         allow_blank=False,
-        error_messages={'blank':'فایل نمیتواند خالی باشد',
-                          'min_length':'طول کاراکتر حداقل سه باشد' ,
-                          'max_length':"طول بیشتر از حد مجاز است",
-                        })
+        error_messages={
+            'blank': 'عنوان سند نمی‌تواند خالی باشد.',
+            'min_length': 'طول عنوان باید حداقل سه کاراکتر باشد.',
+            'max_length': 'طول عنوان بیشتر از حد مجاز است.',
+        }
+    )
     category = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(),
-        error_messages ={
-         'required': 'ارسال فایل الزامی است.',
-         'empty': 'فایل ارسال‌شده خالی است.',
-
-     })
+        error_messages={
+            'required': 'انتخاب دسته‌بندی الزامی است.',
+            'null': 'دسته‌بندی نامعتبر است.',
+        }
+    )
 
     class Meta:
         model = Document
         fields = [
             'id', 'owner', 'category', 'title', 'description',
             'file', 'file_name', 'file_size', 'mime_type',
-            'status', 'created_at', 'updated_at','error_message','extracted_text'
+            'status', 'created_at', 'updated_at', 'error_message', 'extracted_text'
         ]
-        read_only_fields = ['id', 'owner', 'created_at', 'updated_at','file_name',
-                            'file_size', 'mime_type','status','error_message','extracted_text']
+        read_only_fields = [
+            'id', 'owner', 'created_at', 'updated_at', 'file_name',
+            'file_size', 'mime_type', 'status', 'error_message', 'extracted_text'
+        ]
 
-    ALLOWED_EXTENSIONS = ['pdf', 'jpg', 'jpeg', 'png', 'docx']
+    ALLOWED_EXTENSIONS = ['pdf', 'docx', 'jpg', 'jpeg', 'png']
     ALLOWED_MIME_TYPES = [
         'application/pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'image/jpeg',
         'image/png',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ]
-
-    MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
+    MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 
     def validate_file(self, value):
-        ALLOWED_EXTENSIONS = ['pdf', 'docx', 'jpg', 'jpeg', 'png']
-        ALLOWED_MIME_TYPES = [
-            'application/pdf',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'image/jpeg',
-            'image/png',
-        ]
-        MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
-
         ext = value.name.split('.')[-1].lower()
-        if ext not in ALLOWED_EXTENSIONS:
+        if ext not in self.ALLOWED_EXTENSIONS:
             raise serializers.ValidationError(
-                f"فرمت مجاز نیست. مجازها: {', '.join(ALLOWED_EXTENSIONS)}"
+                f"فرمت مجاز نیست. مجازها: {', '.join(self.ALLOWED_EXTENSIONS)}"
             )
 
         # چک حجم
-        if value.size > MAX_FILE_SIZE:
+        if value.size > self.MAX_FILE_SIZE:
             raise serializers.ValidationError(
-                f"حجم فایل نباید بیشتر از {MAX_FILE_SIZE // (1024 * 1024)}MB باشد."
+                f"حجم فایل نباید بیشتر از {self.MAX_FILE_SIZE // (1024 * 1024)}MB باشد."
             )
 
         return value
@@ -78,15 +72,27 @@ class DocumentSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError("عنوان نمی‌تواند فقط فاصله باشد.")
 
-        if Document.objects.filter(title__iexact=value).exists():
-            raise serializers.ValidationError("این عنوان قبلاً استفاده شده است.")
+        request = self.context.get('request')
+        user = request.user if request and request.user.is_authenticated else None
+
+        qs = Document.objects.filter(title__iexact=value)
+        if user:
+            qs = qs.filter(owner=user)
+
+        # در صورت ویرایش (PUT/PATCH)، خود سند را مستثنی کن
+        if self.instance:
+            qs = qs.exclude(pk=self.instance.pk)
+
+        if qs.exists():
+            raise serializers.ValidationError("شما قبلاً سندی با این عنوان ثبت کرده‌اید.")
         return value
 
-    # def validate_category(self, value):
-    #     request = self.context['request']
-    #     if value.owner != request.user:
-    #         raise serializers.ValidationError("این دسته‌بندی متعلق به شما نیست.")
-    #     return value
+    def validate_category(self, value):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            if value.owner != request.user:
+                raise serializers.ValidationError("این دسته‌بندی متعلق به شما نیست.")
+        return value
 
     def create(self, validated_data):
         file = validated_data.get('file')
