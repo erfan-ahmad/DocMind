@@ -4,12 +4,15 @@ from documents_app.models import chunk as Chunk
 from .embedding import embed_query
 
 
-def retrieve(query_text, k=5):
-    chunks = list(
+def retrieve(query_text, user=None, k=5):
+    qs = (
         Chunk.objects.exclude(embedding__isnull=True)
         .select_related('document')
-        .order_by('document_id', 'index')
     )
+    if user is not None:
+        qs = qs.filter(document__owner=user)
+
+    chunks = list(qs.order_by('document_id', 'index'))
 
     if not chunks:
         return []
