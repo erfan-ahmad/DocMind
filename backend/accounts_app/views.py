@@ -169,14 +169,16 @@ from datetime import datetime
 
 
 class IsOwnerOrReadOnly(BasePermission):
-
-
     def has_object_permission(self, request, view, obj):
         # خواندن برای همه مجاز است
         if request.method in ['GET', 'HEAD', 'OPTIONS']:
             return True
-        # نوشتن فقط برای صاحب شیء
-        return obj.user == request.user
+        # اگر خود شیء یک کاربر بود
+        if isinstance(obj, User):
+            return obj == request.user
+        # اگر شیء فیلد user یا owner داشت
+        owner = getattr(obj, 'user', getattr(obj, 'owner', None))
+        return owner == request.user
 
 
 class UserDetailView(APIView):
