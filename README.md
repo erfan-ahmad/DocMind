@@ -53,7 +53,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/DocMind.git
+git clone https://github.com/erfan-ahmad/DocMind.git
 cd DocMind/backend
 
 # Create and activate virtual environment
@@ -153,6 +153,14 @@ DocMind/
 ├── .gitignore
 └── README.md
 ```
+
+---
+
+## 👨‍💻 Author
+
+**Erfan Ahmadi**  
+- Backend & AI Developer  
+- GitHub: [@erfan-ahmad](https://github.com/erfan-ahmad)
 
 ---
 
