@@ -1,32 +1,40 @@
-# Local embedding model (large, downloadable separately)
+# Local embedding model weights (large binaries, downloaded separately)
 model/
+*.bin
+*.safetensors
+*.onnx
 
-# Env & secrets
+# Environment variables & secrets
 .env
 .env.local
+.env.*.local
 
-# Python
+# Python artifacts
 __pycache__/
 *.py[cod]
+*$py.class
 *.egg-info/
 .venv/
 venv/
+.venv_win/
 .pytest_cache/
 
-# Django / uploads
+# Django files & uploaded media
 db.sqlite3
 backend/db.sqlite3
 backend/documents/
 media/
 *.log
 
-# Node
+# Frontend & Node dependencies
 node_modules/
+frontend/node_modules/
+frontend/dist/
+.npm
 dist/
 
-# Frontend (temporarily not pushed)
-frontend/
-
-# IDE
+# IDE & Editor configs
 .idea/
 .vscode/
+*.swp
+*.swo

@@ -1,252 +1,161 @@
-# DocMind
+# 🧠 DocMind
 
-> An intelligent document management and AI-powered question answering platform.
+> **Intelligent Document Management & Retrieval-Augmented Generation (RAG) Platform**
 
-DocMind is a backend-focused project designed to provide a secure and structured platform for managing documents and, in future stages, interacting with them using AI and Retrieval-Augmented Generation (RAG).
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Django](https://img.shields.io/badge/django-5.1+-green.svg)](https://www.djangoproject.com/)
+[![React](https://img.shields.io/badge/react-19+-61dafb.svg)](https://react.dev/)
+[![TailwindCSS](https://img.shields.io/badge/tailwindcss-v4-38bdf8.svg)](https://tailwindcss.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-The project is being developed step by step, starting with authentication and document management and gradually moving toward document processing, semantic search, and AI-powered question answering.
-
----
-
-## 🚀 Project Overview
-
-The main goal of DocMind is to build a system where users can:
-
-* Create and manage their accounts
-* Organize documents into categories
-* Upload and manage their documents
-* Securely access only their own resources
-* Process document content
-* Ask questions about their documents using AI
-* Receive answers with relevant source references
-
-The current implementation focuses on the **backend architecture, authentication, and document management**.
+**DocMind** is an enterprise-grade document intelligence platform that allows users to upload, categorize, and semantically query their documents. Leveraging local **Sentence Transformers**, **LangChain**, and **OCR pipelines**, DocMind enables fast semantic search and contextual question answering (RAG) with precise citations and source transparency.
 
 ---
 
-## 🛠️ Tech Stack
+## ✨ Key Features
+
+- 🔐 **Secure Multi-Tenant Architecture:** User isolation at database and vector retriever levels with JWT authentication.
+- 📁 **Document & Category Management:** Hierarchical categorization, metadata tagging, and document lifecycle control.
+- 📄 **Multimodal Ingestion & OCR:** Automatic text extraction from PDFs and scanned documents via `pytesseract` and `pdf2image` with Persian/Arabic script normalization.
+- ⚡ **RAG Semantic Search:** Chunk-level vector embeddings with cosine similarity scoring, configurable top-$k$ retrieval, and source excerpts.
+- 🎨 **Modern Responsive UI:** Complete Persian (RTL) frontend built with **React**, **TypeScript**, **Tailwind CSS**, and **Vazirmatn** typography.
+- 📖 **Interactive API Documentation:** Full OpenAPI 3.0 schema and Swagger/Redoc UI powered by `drf-spectacular`.
+
+---
+
+## 🛠️ Architecture & Tech Stack
 
 ### Backend
+- **Framework:** Python, Django 5+, Django REST Framework (DRF)
+- **Authentication:** SimpleJWT (Access & Refresh tokens)
+- **AI & NLP:** `sentence-transformers`, `torch` (CPU/GPU-ready), `langchain`
+- **Text & OCR:** `pypdf`, `pdf2image`, `pytesseract`, `arabic-reshaper`, `python-bidi`, `parsivar`
+- **Database:** SQLite (default/dev), PostgreSQL / pgvector ready
 
-* Python
-* Django
-* Django REST Framework (DRF)
-
-### Authentication
-
-* JWT Authentication
-* Permission-based access control
-
-### API
-
-* RESTful API
-* JSON
-* OpenAPI
-
-### Development Tools
-
-* Git
-* GitHub
-
-> Additional technologies will be added as the project progresses.
+### Frontend
+- **Framework:** React 19, TypeScript, Vite
+- **Styling:** Tailwind CSS v4, RTL Layout, Lucide-style SVG icons
+- **State & HTTP:** Axios client with automated JWT interceptors and refresh handlers
 
 ---
 
-## 🔐 Current Features
+## 🚀 Getting Started
 
-### Authentication
+### Prerequisites
 
-The authentication system has been implemented and tested.
-
-Current functionality includes:
-
-* User Registration
-* User Login
-* JWT Authentication
-* Access Control & Permissions
-* Authentication Tests
+- **Python:** `3.10+`
+- **Node.js:** `18+` & `npm`
+- **Tesseract OCR & Poppler:** (Required for PDF and image OCR processing)
 
 ---
 
-## 📄 Document Management
+### 1. Backend Setup
 
-**Status: In Progress**
+```bash
+# Clone the repository
+git clone https://github.com/your-username/DocMind.git
+cd DocMind/backend
 
-The next development stage is focused on building the document management system.
+# Create and activate virtual environment
+python -m venv .venv
+# On Windows:
+.venv\Scripts\activate
+# On Linux/macOS:
+source .venv/bin/activate
 
-Planned functionality includes:
+# Install dependencies
+pip install -r ../requirements.txt
 
-* Category CRUD
-* Document Upload
-* Document CRUD
-* Ownership & Security
-* File Validation
-* Search
-* Filtering
-* Pagination
-* Automated Tests
+# Run database migrations
+python manage.py migrate
+
+# Create superuser (optional)
+python manage.py createsuperuser
+
+# Start development server
+python manage.py runserver
+```
+The backend API will be available at: `http://127.0.0.1:8000/api/`
 
 ---
 
-## 🧠 AI & RAG
+### 2. Frontend Setup
 
-AI functionality is planned for a later stage of development.
+```bash
+cd ../frontend
 
-The planned architecture includes:
+# Install dependencies
+npm install
 
-```text
-Documents
-    ↓
-Text Extraction
-    ↓
-Text Processing
-    ↓
-Chunking
-    ↓
-Embeddings
-    ↓
-Vector Database
-    ↓
-Retrieval
-    ↓
-LLM
-    ↓
-Question & Answer
-    ↓
-Source Citation
+# Start development server
+npm run dev
+```
+The frontend UI will be available at: `http://localhost:5173/`
+
+---
+
+## 📡 API Endpoints Overview
+
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| `POST` | `/api/accounts/register/` | Register new user account | ❌ |
+| `POST` | `/api/accounts/login/` | Obtain JWT token pair | ❌ |
+| `POST` | `/api/accounts/token/refresh/` | Refresh expired access token | ❌ |
+| `GET` | `/api/accounts/profile/` | Fetch current user profile | ✅ |
+| `GET/POST`| `/api/categories/` | List or create categories | ✅ |
+| `GET/POST`| `/api/documents/` | List or upload documents (PDF/TXT) | ✅ |
+| `POST` | `/api/ask/` | Ask questions with RAG similarity | ✅ |
+| `GET` | `/api/schema/swagger-ui/`| Interactive Swagger UI docs | ❌ |
+
+---
+
+## 🤖 RAG Engine Workflow
+
+```
+[User Document Upload]
+        │
+        ▼
+[Text Extraction & OCR (pdf2image / pytesseract)]
+        │
+        ▼
+[Persian Normalization & Text Cleaning]
+        │
+        ▼
+[Recursive Chunking (LangChain)]
+        │
+        ▼
+[Vector Embeddings Generation (SentenceTransformer)]
+        │
+        ▼
+[User Query] ──> [Cosine Similarity Search (k nearest chunks)] ──> [Synthesized Answer + Sources]
 ```
 
-The purpose of this architecture is to allow users to ask questions about their own documents and receive answers based on the relevant document content.
-
 ---
 
-## 📊 Project Status
+## 📁 Project Structure
 
-DocMind is currently under active development.
-
-### Development Roadmap
-
-* [x] **Project Setup**
-
-* [x] **Authentication**
-
-  * [x] User Registration
-  * [x] User Login
-  * [x] JWT Authentication
-  * [x] Permissions
-  * [x] Authentication Tests
-
-* [x] **Document Management** — **In Progress**
-
-  * [x] Category CRUD
-  * [x] Document Upload
-  * [x] Document CRUD
-  * [x] Ownership & Security
-  * [x] Validation
-  * [x] Search, Filtering & Pagination
-  * [x] Tests
-
-* [x] **Document Processing**
-
-  * [ ] Text Extraction from PDF and other supported files
-  * [ ] Document preprocessing for AI
-
-* [ ] **AI / RAG**
-
-  * [ ] Text Chunking
-  * [ ] Embeddings
-  * [ ] Vector Database
-  * [ ] Retrieval
-  * [ ] LLM Integration
-  * [ ] Question Answering
-  * [ ] Source Citation
-
-* [ ] **Production**
-
-  * [ ] Docker
-  * [ ] Deployment
-  * [ ] Monitoring
-  * [ ] API Documentation
-
----
-
-## 🏗️ Development Approach
-
-DocMind is being developed incrementally.
-
-Each major part of the system is implemented and tested before moving to the next stage.
-
-The development process follows this general architecture:
-
-```text
-Project Setup
-      ↓
-Authentication
-      ↓
-Document Management
-      ↓
-Document Processing
-      ↓
-AI / RAG
-      ↓
-Production
+```
+DocMind/
+├── backend/                  # Django project root
+│   ├── backend/              # Core project settings and routing
+│   ├── accounts_app/         # Custom authentication and profiles
+│   ├── documents_app/        # Documents, categories & RAG retrieval services
+│   └── manage.py
+├── frontend/                 # React + Vite + TypeScript application
+│   ├── src/
+│   │   ├── api/              # Axios client and token interceptors
+│   │   ├── components/       # Layout, ProtectedRoute, Navigation
+│   │   ├── hooks/            # useAuth context and state hooks
+│   │   └── pages/            # Dashboard, Documents, Categories, AI Chat, Auth
+│   └── index.html
+├── model/                    # Local embedding model cache (ignored in Git)
+├── requirements.txt          # Python dependencies
+├── .gitignore
+└── README.md
 ```
 
-This approach helps keep the project modular, maintainable, and easier to test.
-
 ---
 
-## 🔒 Security
+## 📄 License
 
-Security is an important part of the project architecture.
-
-The authentication layer uses JWT tokens and permission-based access control.
-
-As document management is implemented, ownership and resource-level security will ensure that users can only access resources they are authorized to access.
-
----
-
-## 🧪 Testing
-
-Testing is included as part of the development process.
-
-Authentication functionality has already been tested, and tests will be expanded as new modules such as document management and document processing are implemented.
-
----
-
-## 📌 Future Plans
-
-After completing document management, the project will move toward:
-
-1. Document text extraction
-2. Document preprocessing
-3. Chunking
-4. Embedding generation
-5. Vector database integration
-6. Semantic retrieval
-7. LLM integration
-8. AI-powered Q&A
-9. Source citation
-10. Production deployment
-
----
-
-## 👨‍💻 Author
-
-**Erfan Ahmadi**
-
-Student & Backend Developer
-
-Interested in:
-
-* Artificial Intelligence
-* Machine Learning
-* Backend Development
-
----
-
-## ⚠️ Project Status
-
-DocMind is a **work in progress** project.
-
-Some features described in the roadmap have not been implemented yet and are planned for future development.
+This project is licensed under the [MIT License](LICENSE).
