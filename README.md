@@ -3,7 +3,7 @@
 > **Intelligent Document Management & Retrieval-Augmented Generation (RAG) Platform**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Django](https://img.shields.io/badge/django-5.1+-green.svg)](https://www.djangoproject.com/)
+[![Django](https://img.shields.io/badge/django-6.1+-green.svg)](https://www.djangoproject.com/)
 [![React](https://img.shields.io/badge/react-19+-61dafb.svg)](https://react.dev/)
 [![TailwindCSS](https://img.shields.io/badge/tailwindcss-v4-38bdf8.svg)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -26,7 +26,7 @@
 ## 🛠️ Architecture & Tech Stack
 
 ### Backend
-- **Framework:** Python, Django 5+, Django REST Framework (DRF)
+- **Framework:** Python, Django 6+, Django REST Framework (DRF)
 - **Authentication:** SimpleJWT (Access & Refresh tokens)
 - **AI & NLP:** `sentence-transformers`, `torch` (CPU/GPU-ready), `langchain`
 - **Text & OCR:** `pypdf`, `pdf2image`, `pytesseract`, `arabic-reshaper`, `python-bidi`, `parsivar`
